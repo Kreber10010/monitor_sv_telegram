@@ -1,7 +1,12 @@
 import ping3
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+TARGET_IP = os.getenv("SV_TARGET_IP")
 
 while True:
-    resposta = ping3.ping("192.168.1.175")
+    resposta = ping3.ping(TARGET_IP)
 
     if resposta is not None:
         print("Blz, passou! Tempo de resposta:", resposta, "s")
