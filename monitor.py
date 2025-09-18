@@ -5,14 +5,18 @@ import logging
 from telegram.ext import Application, CommandHandler, ContextTypes
 import ping3
 import socket
+import os
+from dotenv import load_dotenv
 
 # Ative o logging
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 
-BOT_TOKEN = "8431098641:AAFHkabBirjMG6MINm9xz5M5WxLuETrb3iM"
-CHAT_ID = "-4984490758"
-TARGET_URL = "192.168.1.175"
-TARGET_PORT = 22
+load_dotenv()
+
+BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+TARGET_IP = os.getenv("SV_TARGET_IP")
+TARGET_PORT = os.getenv("SV_TARGET_PORT")
 
 target_online = False
 
@@ -29,18 +33,18 @@ async def check_target_status(context: ContextTypes.DEFAULT_TYPE):
     current_status = False
 
     # ping    
-    if ping3.ping(TARGET_URL):
+    if ping3.ping(TARGET_IP):
         
         # Verifica a porta
-        if check_port(TARGET_URL, TARGET_PORT):
+        if check_port(TARGET_IP, TARGET_PORT):
             current_status = True
 
     if current_status != target_online:
         target_online = current_status
         if not target_online:
-            await context.bot.send_message(chat_id=CHAT_ID, text=f"🚨 ALERTA: O alvo em {TARGET_URL} está OFFLINE!")
+            await context.bot.send_message(chat_id=CHAT_ID, text=f"🚨 ALERTA: O alvo em {TARGET_IP} está OFFLINE!")
         else:
-            await context.bot.send_message(chat_id=CHAT_ID, text=f"✅ O alvo em {TARGET_URL} voltou a ficar ONLINE!")
+            await context.bot.send_message(chat_id=CHAT_ID, text=f"✅ O alvo em {TARGET_IP} voltou a ficar ONLINE!")
 
 """
 async def check_target_status(context: ContextTypes.DEFAULT_TYPE):
