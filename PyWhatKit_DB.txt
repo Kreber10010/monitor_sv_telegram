@@ -1,0 +1,5 @@
+Date: 18/9/2025
+Time: 13:20
+Phone Number: +5591986307479
+Message: Status do Servidor:Ping: Erro no Ping: [Errno 1] Operation not permitted (N/A)
+--------------------
