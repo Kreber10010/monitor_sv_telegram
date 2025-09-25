@@ -31,51 +31,29 @@ async def check_target_status(context: ContextTypes.DEFAULT_TYPE):
     global target_online
 
     current_status = False
+    failure_reason = ""
 
-    # ping    
+    # ping
     if ping3.ping(TARGET_IP):
-        
+        print("Ping OK!")
+
         # Verifica a porta
         if check_port(TARGET_IP, TARGET_PORT):
+            print(f"Porta {TARGET_PORT} OK!")
             current_status = True
+        else:
+            failure_reason = f"Porta {TARGET_PORT} OFFLINE!"
+            print(failure_reason)
+    else:
+        failure_reason = "Ping FALHOU!"
+        print(failure_reason)
 
     if current_status != target_online:
         target_online = current_status
         if not target_online:
-            await context.bot.send_message(chat_id=CHAT_ID, text=f"🚨 ALERTA: O alvo em {TARGET_IP} está OFFLINE!")
+            await context.bot.send_message(chat_id=CHAT_ID, text=f"🚨 ALERTA: O alvo em {TARGET_IP} está OFFLINE! \nMotivo: {failure_reason}")
         else:
             await context.bot.send_message(chat_id=CHAT_ID, text=f"✅ O alvo em {TARGET_IP} voltou a ficar ONLINE!")
-
-"""
-async def check_target_status(context: ContextTypes.DEFAULT_TYPE):
-    global target_online
-
-    current_status = False
-    try:
-        # Pings the target and gets the result
-        ping_result = ping3.ping(TARGET_URL, timeout=1)
-
-        # --- Adicione esta linha para ver o resultado ---
-        print(f"Resultado do ping para {TARGET_URL}: {ping_result}")
-        # -----------------------------------------------
-
-        # If ping_result is not False (e.g., a number), it means the ping was successful.
-        if ping_result is not False:
-            current_status = True
-        else:
-            current_status = False
-
-    except Exception as e:
-        print(f"Erro no ping: {e}")
-        current_status = False
-
-    if current_status != target_online:
-        target_online = current_status
-        if not target_online:
-            await context.bot.send_message(chat_id=CHAT_ID, text=f"🚨 ALERTA: O alvo em {TARGET_URL} está OFFLINE!")
-        else:
-            await context.bot.send_message(chat_id=CHAT_ID, text=f"✅ O alvo em {TARGET_URL} voltou a ficar ONLINE!")
-"""
 
 def main():
     application = Application.builder().token(BOT_TOKEN).build()
